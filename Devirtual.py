@@ -29,6 +29,10 @@ class Devirtual():
             else:
                 shutil.copy(source, destination)
 
+    def _devirtual_from_vreg_file(self, vreg_file_path, vreg_mapping):
+        pass
+        #TODO: impl
+
     def _devirtual_vfs(self):
         store_path = self.config["STORE"]
         vfs_path = os.path.join(store_path, "VFS")
@@ -43,9 +47,13 @@ class Devirtual():
             self._copy_file(sub_path, real_path)
 
     def _devirtual_vreg(self):
-        pass
-        #TODO impl
-    
+        store_path = self.config["STORE"]
+        vreg_path = os.path.join(store_path, "VREG")
+        for vreg_file in self.config["VREG"].keys():
+            vreg_file_path = os.path.join(vreg_path, vreg_file)
+            vreg_mapping = self.config["VREG"][vreg_file]
+            self._devirtual_from_vreg_file(vreg_file_path, vreg_mapping)
+
     def go(self):
         if not self.config:
             self.load_config()
