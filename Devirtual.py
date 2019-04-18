@@ -1,4 +1,4 @@
-import os, json, re, shutil
+import os, json, re, shutil, uuid
 
 class Devirtual():
     def __init__(self):
@@ -29,9 +29,23 @@ class Devirtual():
             else:
                 shutil.copy(source, destination)
 
-    def _devirtual_from_vreg_file(self, vreg_file_path, vreg_mapping):
-        pass
-        #TODO: impl
+    def _devirtual_from_vreg_file(self, vreg_mapping, vreg_file_path, vreg_file_type="dat"):
+        from Reg_Hive.reg import Registry
+        reg = Registry()
+        if vreg_file_type is "dat":
+            reg.read_from_dat(vreg_file_path)
+        elif vreg_file_type is "reg":
+            reg.read_from_reg(vreg_file_path)
+        else:
+            reg.read_from_dat(vreg_file_path)
+        reg.dump_to_reg()
+        for hive_key, real_key in vreg_mapping.items():
+            reg.reg_str = reg.reg_str.replace(hive_key, real_key)
+        uuid_str = str(uuid.uuid4())
+        temp_reg = uuid_str + ".reg"
+        reg.dump_to_reg(temp_reg)
+        os.system("reg import " + temp_reg)
+        os.remove(temp_reg)
 
     def _devirtual_vfs(self):
         store_path = self.config["STORE"]
@@ -52,7 +66,7 @@ class Devirtual():
         for vreg_file in self.config["VREG"].keys():
             vreg_file_path = os.path.join(vreg_path, vreg_file)
             vreg_mapping = self.config["VREG"][vreg_file]
-            self._devirtual_from_vreg_file(vreg_file_path, vreg_mapping)
+            self._devirtual_from_vreg_file(vreg_mapping, vreg_file_path, vreg_file.split(".")[-1])
 
     def go(self):
         if not self.config:
