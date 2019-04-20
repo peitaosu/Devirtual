@@ -33,14 +33,19 @@ class Devirtual():
         from Reg_Hive.reg import Registry
         reg = Registry()
         if vreg_file_type is "dat":
-            reg.read_from_dat(vreg_file_path)
+            if len(vreg_mapping.keys()) > 1:
+                #TODO support multiple mappings
+                return
+            hive_replace_path = vreg_mapping.keys()[0]
+            hive_load_path = vreg_mapping[hive_replace_path]
+            reg.read_from_dat(vreg_file_path, hive_replace_path, hive_load_path)
         elif vreg_file_type is "reg":
             reg.read_from_reg(vreg_file_path)
         else:
             reg.read_from_dat(vreg_file_path)
+            for hive_key, real_key in vreg_mapping.items():
+                reg.reg_str = reg.reg_str.replace(hive_key, real_key)
         reg.dump_to_reg()
-        for hive_key, real_key in vreg_mapping.items():
-            reg.reg_str = reg.reg_str.replace(hive_key, real_key)
         uuid_str = str(uuid.uuid4())
         temp_reg = uuid_str + ".reg"
         reg.dump_to_reg(temp_reg)
