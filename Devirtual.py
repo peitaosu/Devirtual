@@ -34,7 +34,7 @@ class Devirtual():
         reg = Registry()
         if vreg_file_type == "dat":
             if len(vreg_mapping.keys()) > 1:
-                #TODO support multiple mappings
+                print("CURRENT NOT SUPPORT MULTIPLE MAPPINGS.")
                 return
             hive_replace_path = vreg_mapping.keys()[0]
             hive_load_path = vreg_mapping[hive_replace_path]
