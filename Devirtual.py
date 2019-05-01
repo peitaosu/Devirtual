@@ -1,4 +1,4 @@
-import os, json, re, shutil, uuid
+import os, json, re, shutil, uuid, platform
 
 class Devirtual():
     def __init__(self):
@@ -51,7 +51,10 @@ class Devirtual():
         uuid_str = str(uuid.uuid4())
         temp_reg = uuid_str + ".reg"
         reg.dump_to_reg(temp_reg)
-        os.system("reg import " + temp_reg)
+        if platform.system() == "Windows":
+            os.system("reg import " + temp_reg)
+        else:
+            print("Only Windows supports registry, your OS is {}".format(platform.system()))
         os.remove(temp_reg)
 
     def _devirtual_vfs(self):
